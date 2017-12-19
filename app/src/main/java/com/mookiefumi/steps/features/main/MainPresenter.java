@@ -1,4 +1,4 @@
-package com.mookiefumi.steps;
+package com.mookiefumi.steps.features.main;
 
 import com.mookiefumi.steps.services.base.ApiCommunication;
 import com.mookiefumi.steps.services.pojos.Repo;
@@ -32,10 +32,14 @@ public class MainPresenter implements IMainPresenter {
         this.repos = repos;
     }
 
-    public void getRepos(){
-        Retrofit retrofit = ApiCommunication.getInstance().retrofit;
+    @Override
+    public void getReposFromApi(String user){
+
+        view.SetBusy(true);
+
+        Retrofit retrofit = ApiCommunication.getInstance().getRetrofit();
         GitHubService service = retrofit.create(GitHubService.class);
-        Call<List<Repo>> call = service.getRepos("mookiefumi");
+        Call<List<Repo>> call = service.getRepos(user);
         call.enqueue(new Callback<List<Repo>>() {
             @Override
             public void onResponse(Call<List<Repo>> call, Response<List<Repo>> response) {
@@ -50,11 +54,13 @@ public class MainPresenter implements IMainPresenter {
                     default:
                         break;
                 }
+                view.SetBusy(false);
             }
 
             @Override
             public void onFailure(Call<List<Repo>> call, Throwable t) {
-
+                view.SetBusy(false);
+                view.ShowMessage("Error ocurred during operation");
             }
         });
     }

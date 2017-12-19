@@ -6,7 +6,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiCommunication {
 
     private static ApiCommunication instance = null;
-    public Retrofit retrofit;
+    private Retrofit retrofit;
 
     private ApiCommunication() {
         retrofit = new Retrofit.Builder()
@@ -20,6 +20,10 @@ public class ApiCommunication {
             instance = new ApiCommunication();
         }
         return instance;
+    }
+
+    public Retrofit getRetrofit(){
+        return retrofit;
     }
 
 }

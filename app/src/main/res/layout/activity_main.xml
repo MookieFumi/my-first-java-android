@@ -4,13 +4,41 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.mookiefumi.steps.MainActivity">
+    tools:context="com.mookiefumi.steps.features.main.MainActivity">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <include layout="@layout/loading"></include>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:listitem="@layout/repo_row_item">
-    </android.support.v7.widget.RecyclerView>
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="5dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Repo name"/>
+            <android.support.v7.widget.AppCompatEditText
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:id="@+id/search_text"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/search_button"
+                android:text="Search"/>
+        </LinearLayout>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/repo_row_item">
+        </android.support.v7.widget.RecyclerView>
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

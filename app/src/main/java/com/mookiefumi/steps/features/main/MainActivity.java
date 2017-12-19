@@ -1,47 +1,94 @@
-package com.mookiefumi.steps;
+package com.mookiefumi.steps.features.main;
 
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.github.ybq.android.spinkit.SpinKitView;
+import com.github.ybq.android.spinkit.style.DoubleBounce;
+import com.mookiefumi.steps.R;
 import com.mookiefumi.steps.services.pojos.Repo;
 import com.squareup.picasso.Picasso;
 
-public class MainActivity extends AppCompatActivity implements IMainView {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, IMainView {
 
     private RecyclerView recyclerView;
     private MainAdapter adapter;
     private IMainPresenter presenter;
-
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        progressBar = findViewById(R.id.progress);
+        DoubleBounce doubleBounce = new DoubleBounce();
+        progressBar.setIndeterminateDrawable(doubleBounce);
+
+        Button searchButton = findViewById(R.id.search_button);
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AppCompatEditText searchText = findViewById(R.id.search_text);
+                Search(searchText.getText().toString());
+            }
+        });
+
         presenter = new MainPresenter(this);
         adapter = new MainAdapter(this, presenter);
 
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
 
-        presenter.getRepos();
+        presenter.getReposFromApi("MookieFumi");
     }
 
     @Override
     public void NotifyDataSetChanged() {
         adapter.notifyDataSetChanged();
         recyclerView.scrollToPosition(presenter.getItems().size());
+    }
+
+    @Override
+    public void ShowMessage(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void Search(String searchText) {
+        presenter.getReposFromApi(searchText);
+    }
+
+    @Override
+    public void SetBusy(Boolean busy) {
+        LinearLayout layout = (LinearLayout) progressBar.getParent();
+        if(busy){
+            layout.setVisibility(View.VISIBLE);
+        }
+        else{
+            layout.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+
     }
 
     public class MainAdapter extends RecyclerView.Adapter<MainAdapter.RepoViewHolder> {
@@ -63,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         public void onBindViewHolder(RepoViewHolder holder, final int position) {
             final Repo repo = presenter.getItems().get(position);
             holder.nameTextView.setText(repo.getName());
-            holder.descriptionTextView.setText(repo.getDescription().toString());
+            //holder.descriptionTextView.setText(repo.getDescription().toString());
             Picasso.with(this.context).load(repo.getOwner().getAvatarUrl()).into(holder.profileImageView);
 
             /*holder.tvName.setOnClickListener(new View.OnClickListener() {
@@ -78,8 +125,10 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
         @Override
         public int getItemCount() {
+
             return presenter.getItems().size();
         }
+
 
         public class RepoViewHolder extends RecyclerView.ViewHolder {
             TextView nameTextView;
