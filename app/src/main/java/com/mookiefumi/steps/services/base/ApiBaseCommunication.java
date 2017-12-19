@@ -3,26 +3,26 @@ package com.mookiefumi.steps.services.base;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class ApiCommunication {
+public class ApiBaseCommunication {
 
-    private static ApiCommunication instance = null;
+    private static ApiBaseCommunication instance = null;
     private Retrofit retrofit;
 
-    private ApiCommunication() {
+    private ApiBaseCommunication() {
         retrofit = new Retrofit.Builder()
                 .baseUrl("https://api.github.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
     }
 
-    public static ApiCommunication getInstance() {
+    public static ApiBaseCommunication getInstance() {
         if (instance == null) {
-            instance = new ApiCommunication();
+            instance = new ApiBaseCommunication();
         }
         return instance;
     }
 
-    public Retrofit getRetrofit(){
+    public Retrofit getRetrofit() {
         return retrofit;
     }
 

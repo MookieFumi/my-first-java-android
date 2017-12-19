@@ -1,8 +1,8 @@
-package com.mookiefumi.steps.features.main;
+package com.mookiefumi.steps.features.repos;
 
-import com.mookiefumi.steps.services.base.ApiCommunication;
-import com.mookiefumi.steps.services.pojos.Repo;
 import com.mookiefumi.steps.services.GitHubService;
+import com.mookiefumi.steps.services.base.ApiBaseCommunication;
+import com.mookiefumi.steps.services.pojos.Repo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,12 +12,12 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class MainPresenter implements IMainPresenter {
+public class ReposPresenter implements IReposPresenter {
 
-    private IMainView view;
-    private  List<Repo> repos;
+    private IReposView view;
+    private List<Repo> repos;
 
-    public MainPresenter(IMainView view){
+    public ReposPresenter(IReposView view) {
         this.view = view;
         this.repos = new ArrayList<Repo>();
     }
@@ -33,12 +33,13 @@ public class MainPresenter implements IMainPresenter {
     }
 
     @Override
-    public void getReposFromApi(String user){
+    public void getReposFromApi(String user) {
 
         view.SetBusy(true);
 
-        Retrofit retrofit = ApiCommunication.getInstance().getRetrofit();
+        Retrofit retrofit = ApiBaseCommunication.getInstance().getRetrofit();
         GitHubService service = retrofit.create(GitHubService.class);
+
         Call<List<Repo>> call = service.getRepos(user);
         call.enqueue(new Callback<List<Repo>>() {
             @Override
@@ -49,10 +50,8 @@ public class MainPresenter implements IMainPresenter {
                         repos = data;
                         view.NotifyDataSetChanged();
                         break;
-                    case 401:
-                        break;
                     default:
-                        break;
+                        view.ShowMessage("Error ocurred during operation");
                 }
                 view.SetBusy(false);
             }

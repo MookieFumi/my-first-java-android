@@ -3,9 +3,7 @@ package com.mookiefumi.steps.services.pojos;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
-public class Owner {
+public class User {
 
     @SerializedName("login")
     @Expose
@@ -58,6 +56,9 @@ public class Owner {
     @SerializedName("site_admin")
     @Expose
     private Boolean siteAdmin;
+    @SerializedName("score")
+    @Expose
+    private Double score;
 
     public String getLogin() {
         return login;
@@ -195,6 +196,12 @@ public class Owner {
         this.siteAdmin = siteAdmin;
     }
 
+    public Double getScore() {
+        return score;
+    }
+
+    public void setScore(Double score) {
+        this.score = score;
+    }
+
 }
-
-

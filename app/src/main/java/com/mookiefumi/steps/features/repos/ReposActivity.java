@@ -1,8 +1,8 @@
-package com.mookiefumi.steps.features.main;
+package com.mookiefumi.steps.features.repos;
 
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,23 +16,22 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.ybq.android.spinkit.SpinKitView;
 import com.github.ybq.android.spinkit.style.DoubleBounce;
 import com.mookiefumi.steps.R;
 import com.mookiefumi.steps.services.pojos.Repo;
 import com.squareup.picasso.Picasso;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, IMainView {
+public class ReposActivity extends AppCompatActivity implements View.OnClickListener, IReposView {
 
     private RecyclerView recyclerView;
     private MainAdapter adapter;
-    private IMainPresenter presenter;
+    private IReposPresenter presenter;
     private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_repos);
 
         progressBar = findViewById(R.id.progress);
         DoubleBounce doubleBounce = new DoubleBounce();
@@ -47,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        presenter = new MainPresenter(this);
+        presenter = new ReposPresenter(this);
         adapter = new MainAdapter(this, presenter);
 
         recyclerView = findViewById(R.id.recyclerView);
@@ -78,10 +77,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void SetBusy(Boolean busy) {
         LinearLayout layout = (LinearLayout) progressBar.getParent();
-        if(busy){
+        if (busy) {
             layout.setVisibility(View.VISIBLE);
-        }
-        else{
+        } else {
             layout.setVisibility(View.GONE);
         }
     }
@@ -93,10 +91,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public class MainAdapter extends RecyclerView.Adapter<MainAdapter.RepoViewHolder> {
 
-        private IMainPresenter presenter;
+        private IReposPresenter presenter;
         private Context context;
 
-        public MainAdapter(Context context, IMainPresenter presenter) {
+        public MainAdapter(Context context, IReposPresenter presenter) {
             this.context = context;
             this.presenter = presenter;
         }

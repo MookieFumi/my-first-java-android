@@ -1,9 +1,12 @@
 package com.mookiefumi.steps.features.main;
 
-public interface IMainView{
+public interface IUsersView {
     void NotifyDataSetChanged();
+
     void ShowMessage(String message);
-    void Search(String searchText);
+
+    void Search();
+
     void SetBusy(Boolean busy);
 }
 
