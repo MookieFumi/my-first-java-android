@@ -1,4 +1,4 @@
-package com.mookiefumi.steps.features.main;
+package com.mookiefumi.steps.features.users;
 
 public interface IUsersView {
     void NotifyDataSetChanged();

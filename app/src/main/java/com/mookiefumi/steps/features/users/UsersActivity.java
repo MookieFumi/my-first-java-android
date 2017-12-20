@@ -1,15 +1,13 @@
-package com.mookiefumi.steps.features.main;
+package com.mookiefumi.steps.features.users;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -18,7 +16,6 @@ import android.widget.Toast;
 
 import com.github.ybq.android.spinkit.style.DoubleBounce;
 import com.mookiefumi.steps.R;
-import com.mookiefumi.steps.services.pojos.Repo;
 import com.mookiefumi.steps.services.pojos.User;
 import com.squareup.picasso.Picasso;
 
@@ -28,6 +25,8 @@ public class UsersActivity extends AppCompatActivity implements View.OnClickList
     private UserAdapter adapter;
     private IUsersPresenter presenter;
     private ProgressBar progressBar;
+    private LinearLayoutManager layoutManager;
+    private int currentPage = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,17 +42,22 @@ public class UsersActivity extends AppCompatActivity implements View.OnClickList
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+        recyclerView.setOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                presenter.getUsersFromApi(currentPage++);
+            }
+        });
 
-        presenter.getUsersFromApi();
+        presenter.getUsersFromApi(currentPage++);
     }
 
     @Override
     public void NotifyDataSetChanged() {
         adapter.notifyDataSetChanged();
-        recyclerView.scrollToPosition(presenter.getResult().getItems().size());
     }
 
     @Override
@@ -63,7 +67,7 @@ public class UsersActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void Search() {
-        presenter.getUsersFromApi();
+        presenter.getUsersFromApi(1);
     }
 
     @Override
@@ -100,6 +104,7 @@ public class UsersActivity extends AppCompatActivity implements View.OnClickList
         public void onBindViewHolder(RepoViewHolder holder, final int position) {
             final User user = presenter.getResult().getItems().get(position);
             holder.loginTextView.setText(user.getLogin());
+            holder.userIdTextView.setText(user.getId().toString());
             //holder.descriptionTextView.setText(user.getDescription().toString());
             Picasso.with(this.context).load(user.getAvatarUrl()).into(holder.avatarImageView);
 
@@ -115,21 +120,23 @@ public class UsersActivity extends AppCompatActivity implements View.OnClickList
 
         @Override
         public int getItemCount() {
-
             return presenter.getResult().getItems().size();
         }
 
 
         public class RepoViewHolder extends RecyclerView.ViewHolder {
             TextView loginTextView;
+            TextView userIdTextView;
             ImageView avatarImageView;
 
             public RepoViewHolder(View itemView) {
                 super(itemView);
                 loginTextView = (TextView) itemView.findViewById(R.id.login);
+                userIdTextView = (TextView) itemView.findViewById(R.id.userId);
                 avatarImageView = (ImageView) itemView.findViewById(R.id.avatar);
             }
         }
     }
+
 }
 

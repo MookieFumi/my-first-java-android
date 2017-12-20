@@ -25,6 +25,12 @@
             tools:text="My name"
             android:textSize="18dp"
             android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/userId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="My name"
+            android:textSize="12dp" />
     </LinearLayout>
 
 

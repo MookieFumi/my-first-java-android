@@ -1,4 +1,4 @@
-package com.mookiefumi.steps.features.main;
+package com.mookiefumi.steps.features.users;
 
 import com.mookiefumi.steps.services.GitHubService;
 import com.mookiefumi.steps.services.base.ApiBaseCommunication;
@@ -34,20 +34,26 @@ public class UsersPresenter implements IUsersPresenter {
     }
 
     @Override
-    public void getUsersFromApi() {
+    public void getUsersFromApi(int page) {
 
         view.SetBusy(true);
 
         Retrofit retrofit = ApiBaseCommunication.getInstance().getRetrofit();
         GitHubService service = retrofit.create(GitHubService.class);
 
-        Call<Result<User>> call = service.getUsers();
+        Call<Result<User>> call = service.getUsers(page, ApiBaseCommunication.getInstance().getPageSize());
         call.enqueue(new Callback<Result<User>>() {
             @Override
             public void onResponse(Call<Result<User>> call, Response<Result<User>> response) {
                 switch (response.code()) {
                     case 200:
                         Result<User> data = response.body();
+
+                        ArrayList<User> items = new ArrayList<User>();
+                        items.addAll(result.getItems());
+                        items.addAll(data.getItems());
+                        data.setItems(items);
+
                         result = data;
                         view.NotifyDataSetChanged();
                         break;
